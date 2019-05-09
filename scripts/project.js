@@ -1,3 +1,6 @@
+// DEPRECATED!
+// Carousels are now initiated through a dedicated function in co-demos/ApiViz/app/frontend/scripts/utils.js
+
 function loadScript(url, callback){
     console.log("try to load script");
     var script = document.createElement('script');
