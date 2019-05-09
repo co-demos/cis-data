@@ -1,3 +1,15 @@
+function loadScript(url, callback){
+    console.log("try to load script", url);
+    var script = document.createElement('script');
+    script.type = "text/javascript";
+    script.src = url;
+
+    script.onload = callback;
+
+    document.head.appendChild(script);
+}
+
+var activateCards = function(){
 const CSVToObjectKeyMap = Object.freeze({
     'PUBLICATION SUR LE SITE': 'published',
     'MEMBRE DU COLLECTIF': 'name',
@@ -14,7 +26,7 @@ const CSVToObjectKeyMap = Object.freeze({
     'Code scraper OID': 'spiderId'
 })
 
-const membersP = fetch('https://raw.githubusercontent.com/CBalsier/test-content/master/data/members.csv')
+const membersP = fetch('https://raw.githubusercontent.com/co-demos/cis-data/master/data/members.csv')
 .then(r => r.text())
 .then(d3.csvParse)
 .then(dataFromText => {
@@ -107,7 +119,7 @@ const spiderCountByIdP = fetch('http://www.cis-openscraper.com/api/stats?only_sp
                 return Bouture.li([
                     Bouture.header([
                         Bouture.div([
-                            Bouture.img({src: member.logoFolder && member.logoFilename ? `https://raw.githubusercontent.com/CBalsier/test-content/master/logos/Partenaires/${member.logoFolder}/${member.logoFilename}`: ''}),
+                            Bouture.img({src: member.logoFolder && member.logoFilename ? `https://raw.githubusercontent.com/co-demos/cis-data/master/logos/Partenaires/${member.logoFolder}/${member.logoFilename}`: ''}),
                             Bouture.ul(
                                 {class: 'activities'},
                                 [...member.activities].map(a => Bouture.li(a))
@@ -120,7 +132,7 @@ const spiderCountByIdP = fetch('http://www.cis-openscraper.com/api/stats?only_sp
                     ]),
                     Bouture.p(member.presentation),
                     Bouture.footer([
-                        member.portraitURL ? Bouture.img({src: `https://raw.githubusercontent.com/CBalsier/test-content/master/photos/membres/${member.portraitURL}`}) : '',
+                        member.portraitURL ? Bouture.img({src: `https://raw.githubusercontent.com/co-demos/cis-data/master/photos/membres/${member.portraitURL}`}) : '',
                         Bouture.div({class: 'person'}, [
                             Bouture.div(member.contact),
                             Bouture.div(member.contactRole)
@@ -183,6 +195,8 @@ const spiderCountByIdP = fetch('http://www.cis-openscraper.com/api/stats?only_sp
         renderMemberList();
     })
     .catch(err => console.error('page build error', err))
+        };
 
-
-//}, {once: true})
+    loadScript("https://cdn.jsdelivr.net/gh/co-demos/cis-data/scripts/bouture.js",
+        loadScript("https://cdn.jsdelivr.net/npm/d3@5.9.2/dist/d3.min.js",
+            activateCards));
