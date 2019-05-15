@@ -53,6 +53,9 @@ Notes for the configuration of various elements in `config_app`: the examples or
   - change the `dynamic_template` value to `DynamicStaticTest`
   - once done, copy/paste the HTML back to the dedicated file or repository
   - if loaded from GitHub, the HTML pages are available quickly (a minute or so)
+- to properly style the pages:
+  - some classes are already defined in the various [stylesheets](https://github.com/co-demos/ApiViz/tree/c_cis/backend/frontend/styles), some other styles have been added through the file `custom-cis.scss` in the latter folder.
+  - to add further styling without impacting the core files, one could import separately CSS stylesheets (for exemple in a folder such as `co-demos/styles`) and link them through `config_app_routes.py` in a similar way as the external JS scripts, see issue #89.
 - to test external scripts:
   - replace the `ext_script_url` by a static URL for a script in the folder `static` of your ApiViz instance (such as `static/test_script.js`)
   - debug, update, do what is necessary
