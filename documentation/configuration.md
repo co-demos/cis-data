@@ -27,13 +27,18 @@ Notes for the configuration of various elements in `config_app`: the examples or
 - add dropdown menus to access sub-pages
 
 ## Routes
-- TODO
+- add each of the pages/routes from CIS-front
+  - add template URLs
+  - add external scripts
+  - update `content_fields` to match columns titles from Solidata with fields in components `ProjectCard` and `DynamicDetail`
+- update/adapt search pages to work with CIS data
 
 ## Socials
 - replace with CIS values (from CIS-front)
 
 ## Styles
 - add proper colors, in reference to [previous stylesheet](https://github.com/entrepreneur-interet-general/CIS-front/blob/master/cis/app/frontend/styles/cis-colors.scss)
+- add images (for default backgrounds)
 
 # Some tips/Astuces
 ## Footer
