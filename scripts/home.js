@@ -1,29 +1,50 @@
+console.log("--- home.js / counter ...")
+
+
 const projectCountP = fetch('https://solidata-api.co-demos.com/api/dsi/infos/get_one/5c7f0438328ed72e431f338e')
   .then(r => r.json())
   .then(r => r.data.data_raw.f_data_count);
 
 const DELAY = 5000;
 const counter = document.querySelector('.counter')
+console.log("--- counter : ", counter)
+
 projectCountP.then(projectCount => {
-    const start = performance.now();
+  const start = performance.now();
 
-    (function step(){
-        requestAnimationFrame(now => {
-            const elapsed = now - start;
-            let fraction = elapsed/DELAY;
-            if(fraction >=1)
-                fraction = 1;
-            // ease out expo to stabilize the significative numbers quickly
-            const toDisplay = projectCount * (1- (fraction === 1 ? 0 : Math.pow(2, -10*fraction)));
+  (function step(){
+    requestAnimationFrame(now => {
+      const elapsed = now - start;
+      let fraction = elapsed/DELAY;
+      if(fraction >=1)
+        fraction = 1;
+      // ease out expo to stabilize the significative numbers quickly
+      const toDisplay = projectCount * (1- (fraction === 1 ? 0 : Math.pow(2, -10*fraction)));
 
-            counter.textContent = Math.round(Math.max(0, toDisplay));
+      counter.textContent = Math.round(Math.max(0, toDisplay));
 
-            if(fraction <1){
-                step();
-            }
-        })
-    })();
+      if(fraction <1){
+        step();
+      }
+    })
+  })();
 })
+
+console.log("--- home.js / carousel ...")
+
+const carouselDiv = document.querySelector('#carousel-home')
+console.log("--- carouselDiv : ", carouselDiv)
+
+console.log("--- home.js / bulmaCarousel : ", bulmaCarousel)
+const options = {
+  slidesToScroll: 1,
+  slidesToShow: 2,
+  infinite: true,
+  pagination: false,
+}
+console.log("--- home.js / options : ", options)
+
+let carouselHome = bulmaCarousel.attach('#carousel-home', options)
 
 // témoignages
 /*
