@@ -100,95 +100,105 @@ var activateCards = function(){
 
   Promise.all([membersP, spiderCountByIdP])
   .then(([members, spiderCountById]) => {
-      // console.log('members', members)
+    // console.log('members', members)
 
-      function renderMemberList(){
-          const selectedMembers = members.filter(isMemberSelected)
-          // console.log('selectedMembers', selectedMembers)
+    function renderMemberList(){
+      const selectedMembers = members.filter(isMemberSelected)
+      // console.log('selectedMembers', selectedMembers)
 
-          const newUl = Bouture.ul({class: 'members'}, selectedMembers.map(member => {
+      const newUl = Bouture.ul({class: 'members'}, selectedMembers.map(member => {
 
-            // console.log('member spiderCountById', member, spiderCountById)
+        // console.log('member spiderCountById', member, spiderCountById)
 
-            const count = spiderCountById[member.spiderId]
+        const count = spiderCountById[member.spiderId]
 
-            return Bouture.li([
-              Bouture.header([
-                Bouture.div([
-                  Bouture.img({src: member.logoFolder && member.logoFilename ? `https://raw.githubusercontent.com/co-demos/cis-data/master/logos/Partenaires/${member.logoFolder}/${member.logoFilename}`: ''}),
-                  Bouture.ul(
-                      {class: 'activities'},
-                      [...member.activities].map(a => Bouture.li(a))
-                  )
-                ]),
-                Bouture.div([
-                  Bouture.h1(member.name),
-                  member.scale ? Bouture.span({class: 'scale'}, `Echelle ${member.scale}`) : ''
-                ])
-              ]),
-              Bouture.p(member.presentation),
-              Bouture.footer([
-                member.portraitURL ? Bouture.img({src: `https://raw.githubusercontent.com/co-demos/cis-data/master/photos/membres/${member.portraitURL}`}) : '',
-                Bouture.div({class: 'person'}, [
-                  Bouture.div(member.contact),
-                  Bouture.div(member.contactRole)
-                ]),
-                count ? Bouture.div({class: 'count', 'data-spider-id': member.spiderId}, [
-                  Bouture.span({class: 'nb'}, count),
-                  Bouture.span('projets partagés'),
-                ]) : ''
-              ])
+        return Bouture.li([
+          Bouture.header([
+            Bouture.div([
+              Bouture.img({src: member.logoFolder && member.logoFilename ? `https://raw.githubusercontent.com/co-demos/cis-data/master/logos/Partenaires/${member.logoFolder}/${member.logoFilename}`: ''}),
+              Bouture.ul(
+                  {class: 'activities'},
+                  [...member.activities].map(a => Bouture.li(a))
+              )
+            ]),
+            Bouture.div([
+              Bouture.h1(member.name),
+              member.scale ? Bouture.span({class: 'scale'}, `Echelle ${member.scale}`) : ''
             ])
-          })).getElement()
+          ]),
+          Bouture.p(member.presentation),
+          Bouture.footer([
+            member.portraitURL ? Bouture.img({src: `https://raw.githubusercontent.com/co-demos/cis-data/master/photos/membres/${member.portraitURL}`}) : '',
+            Bouture.div({class: 'person'}, [
+              Bouture.div(member.contact),
+              Bouture.div(member.contactRole)
+            ]),
+            count ? Bouture.div({class: 'count', 'data-spider-id': member.spiderId}, [
+              Bouture.span({class: 'nb'}, count),
+              Bouture.span('projets partagés'),
+            ]) : ''
+          ])
+        ])
+      })).getElement()
 
-          // console.log('querySelector / div section ul.members ')
-          document.querySelector('div section ul.members').replaceWith(newUl)
+      // console.log('querySelector / div section ul.members ')
+      document.querySelector('div section ul.members').replaceWith(newUl)
+    }
+
+    // build activities filter
+    let activities = new Set();
+    for(const m of members){
+      for(const a of m.activities){
+        activities.add(a)
       }
+    }
 
-      // build activities filter
-      let activities = new Set();
-      for(const m of members){
-        for(const a of m.activities){
-          activities.add(a)
-        }
-      }
+    // all activities are selected by default
+    selectedActivityFilters = new Set(activities);
 
-      // all activities are selected by default
-      selectedActivityFilters = new Set(activities);
+    const activitiesCheckboxes = Bouture.div({class: 'choices'}, [...activities].map(a => {
+      return Bouture.div(
+        { class: 'checkbox' }, 
+        [
+          Bouture.input(
+            { 
+              type: 'checkbox',
+              class: 'is-checkradio is-block is-primary is-primary-b',
+              id: a,
+              checked: true,
+              onChange(e){
+                if(e.target.checked)
+                  selectedActivityFilters.add(a)
+                else
+                  selectedActivityFilters.delete(a)
+                renderMemberList();
+              }
+            }
+          ),
+          Bouture.label(
+            { 
+              for: a 
+            },
+            [
+              Bouture.span( a )
+            ]
+          )
+        ]
+      )
+    }))
 
-      const activitiesCheckboxes = Bouture.div({class: 'choices'}, [...activities].map(a => {
-        return Bouture.label(
-          {class: 'checkbox'}, 
-          [
-            Bouture.input(
-              {
-                type: 'checkbox',
-                checked: true,
-                onChange(e){
-                  if(e.target.checked)
-                    selectedActivityFilters.add(a)
-                  else
-                    selectedActivityFilters.delete(a)
-                  renderMemberList();
-                }
-            }),
-            Bouture.span(a)
-          ]
-        )
-      }))
+    // console.log('querySelector / .activities ')
+    document.querySelector('.activities').append(activitiesCheckboxes.getElement())
 
-      // console.log('querySelector / .activities ')
-      document.querySelector('.activities').append(activitiesCheckboxes.getElement())
-
-      // make input responsive
-      // console.log('querySelector / input[type="search"] ')
-      document.querySelector('input[type="search"]').addEventListener('input', e => {
-        filterText = e.target.value;
-        renderMemberList();
-      })
-
-      // build members list
+    // make input responsive
+    // console.log('querySelector / input[type="search"] ')
+    document.querySelector('input[type="search"]').addEventListener('input', e => {
+      filterText = e.target.value;
       renderMemberList();
+    })
+
+    // build members list
+    renderMemberList();
   })
 
   .catch(err => console.error('page build error', err))
